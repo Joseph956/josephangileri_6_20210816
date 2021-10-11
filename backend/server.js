@@ -1,7 +1,6 @@
 //importer package http de node.js
 //outils permettant de créer le serveur
 const http = require('http');
-const { mongoose } = require('mongoose');
 const app = require('./app');
 
 const normalizePort = (val) => {

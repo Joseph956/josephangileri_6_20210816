@@ -1,6 +1,6 @@
 //packages variables environnements
 const dotenv = require('dotenv');
-const result = dotenv.config();
+dotenv.config();
 
 //Se connecter à la base de donnée
 const mongoose = require('mongoose');
@@ -11,8 +11,10 @@ mongoose
 			.DB_CLUSTER}.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
 		{
 			useNewUrlParser: true,
-			useUnifiedTopology: true
-		}
+			useUnifiedTopology: true,
+			useCreateIndex: true,
+			useFindAndModify: false
+		},
 	)
 	.then(() => console.log('Connexion à MongoDB réussie !'))
 	.catch(() => console.log('Connexion à MongoDB échouée !'));

@@ -1,14 +1,28 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-// const verifyAuth = require('../middlware/auth');
+
+//fonction router d'express.
 const router = express.Router();
 
+//Importation du "controllers"/user.js.
 const userCtrl = require('../controllers/user');
-// const auth = require('../middlware/auth');
 
-router.post('/signup', userCtrl.signup);
-router.post('/login', userCtrl.login);
+//Importation 
+const verifyEmail = require('../middlware/email');
 
-// router.get('/', userCtrl.getAllUsers);
+//Importation
+const verifyPasswd = require('../middlware/passwd');
+
+//limite les requêtes abusives.
+const rateLimit = require("express-rate-limit");
+
+const blocageRequete = rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 5, //Limite chaque IP a cinq requêtes par windowMs
+    message: "Requetes abusives, vous devez attendre 5 min",
+});
+
+//les routes "endpoints" inscriptions nouvel utilisateur et login.
+router.post('/signup', verifyEmail, verifyPasswd, userCtrl.signup);
+router.post('/login', blocageRequete, userCtrl.login);
 
 module.exports = router;
