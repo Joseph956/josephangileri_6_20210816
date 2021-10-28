@@ -29,17 +29,21 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) => {
 	const userEmailreseach = cryptoJs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
+	console.log(userEmailreseach);
 	User.findOne({ email: userEmailreseach })
 		.then(user => {
 			if (!user) {
-				return res.status(401).json({ error: 'Utilisateur non authentifié !' });
+				return res.status(401).json({ error: 'Utilisateur inexistant !' });
 			}
 			bcrypt
 				.compare(req.body.password, user.password)
 				.then(valid => {
+					//Si le mot de passe est incorrect.
 					if (!valid) {
-						return res.status(403).json({ error: 'Mot de passe incorrect !' });
+						return res.status(403).json({ error: 'Le mot de passe est incorrect !' });
 					}
+					//Si le mot de passe est correct.
+					//Envoie dans la reponse du serveur l'user id accompagné de son token d'authentification
 					res.status(200).json({
 						userId: user._id,
 						token: jwt.sign({ userId: user._id },

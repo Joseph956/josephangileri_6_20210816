@@ -23,12 +23,11 @@ exports.getOneThing = (req, res, next) => {
 			res.status(200).json(thing);
 		})
 		.catch((error) => {
-			res.status(404).json({
+			res.status(400).json({
 				error
 			});
 		});
 };
-
 
 //Création de l'objet
 exports.createThing = (req, res, next) => {
@@ -36,8 +35,6 @@ exports.createThing = (req, res, next) => {
 	delete thingObject._id;
 	const thing = new Thing({
 		...thingObject,
-		likes: 0,
-		dislikes: 0,
 		imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 	});
 	thing.save()
@@ -60,7 +57,7 @@ exports.modifyThing = (req, res, next) => {
 					Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
 						.then(() => res.status(200).json({ message: 'Objet modifié !' }))
 						.catch((error) => res.status(400).json({ error }));
-				})
+				});
 			})
 			.catch(error => res.status(500).json({ error }));
 	} else {
@@ -92,6 +89,7 @@ exports.likeSauce = (req, res, next) => {
 	console.log({ usersLiked: req.body.userId });
 
 	const sauceObject = req.body;
+	console.log('---->sauceObject');
 	console.log(sauceObject);
 
 	if (sauceObject.like === 1) {
